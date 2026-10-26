@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elearning345</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="thongTinSinhVien">
+        <div class="khungChua">
+            <div class="chiTietThongTin">
+                <p><strong>Họ và tên:</strong> Nguyễn Hoàng Anh</p> 
+                <p><strong>Mã sinh viên:</strong> 087206011037</p>   
+            </div>
+        </div>
+    </header>
+    <main class="noiDungChinh">
+
+        <section class="theBaiTap">
+            <h3>Bài 1: Tra cứu Cung Hoàng Đạo & Can Chi</h3>
+            <div class="nhomBieuMau">
+                <label>Ngày sinh:</label>
+                <input type="number" id="ngaySinh" min="1" max="31" placeholder="Ví dụ: 15">
+                
+                <label>Tháng sinh:</label>
+                <input type="number" id="thangSinh" min="1" max="12" placeholder="Ví dụ: 5">
+                
+                <label>Năm sinh:</label>
+                <input type="number" id="namSinh" placeholder="Ví dụ: 1989">
+
+                <button onclick="traCuuCungHoangDao()">Tra cứu</button>
+            </div>
+            <div id="ketQuaTraCuuCung" class="hopKetQua"></div>
+        </section>
+
+        <section class="theBaiTap">
+            <h3>Bài 2: Danh bạ người dùng ngẫu nhiên (Random User Gallery)</h3>
+            <button onclick="taiDanhBa()">Tải lại danh sách (10 người)</button>
+            <div id="luoiNguoiDung" class="danhSachNguoiDung"></div>
+        </section>
+
+        <section class="theBaiTap">
+            <h3>Bài 3: Đăng ký thông tin cư trú cho công dân</h3>
+            <form onsubmit="event.preventDefault(); alert('Đã lưu thông tin!');">
+                <div class="hangBieuMau">
+                    <label>Họ và tên:</label>
+                    <input type="text" required placeholder="Nhập họ và tên">
+                </div>
+                <div class="hangBieuMau">
+                    <label>Số CCCD:</label>
+                    <input type="text" required placeholder="Nhập số CCCD">
+                </div>
+                <div class="hangBieuMau">
+                    <label>Tỉnh / Thành phố:</label>
+                    <select id="chonTinh" onchange="taiDanhSachHuyen()" required>
+                        <option value="">-- Chọn Tỉnh / Thành phố --</option>
+                    </select>
+                </div>
+                <div class="hangBieuMau">
+                    <label>Quận / Huyện / Thị xã:</label>
+                    <select id="chonHuyen" onchange="taiDanhSachXa()" required>
+                        <option value="">-- Chọn Quận / Huyện --</option>
+                    </select>
+                </div>
+                <div class="hangBieuMau">
+                    <label>Xã / Phường / Thị trấn:</label>
+                    <select id="chonXa" required>
+                        <option value="">-- Chọn Xã / Phường --</option>
+                    </select>
+                </div>
+                <button type="submit">Đăng ký cư trú</button>
+            </form>
+        </section>
+
+        <section class="theBaiTap">
+            <h3>Bài 4: Ứng dụng Thời tiết thu nhỏ (Mini Weather App)</h3>
+            <div class="nhomBieuMau">
+                <input type="text" id="tenThanhPho" placeholder="Nhập tên thành phố (Ví dụ: Hanoi, Ho Chi Minh)">
+                <button onclick="xemThoiTiet()">Xem thời tiết</button>
+            </div>
+            <div id="ketQuaThoiTiet" class="hopKetQua"></div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
