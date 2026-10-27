@@ -18,13 +18,34 @@ function moTab(suKien, tenTab) {
 
 // bai tap 1: ung dung cung hoang doa
 function traCuuCungHoangDao() {
-    const ngaySinh = parseInt(document.getElementById('ngaySinh').value);
-    const thangSinh = parseInt(document.getElementById('thangSinh').value);
-    const namSinh = parseInt(document.getElementById('namSinh').value);
+    const ngayNhap = document.getElementById('ngaySinh').value.trim();
+    const thangNhap = document.getElementById('thangSinh').value.trim();
+    const namNhap = document.getElementById('namSinh').value.trim();
     const ketQua = document.getElementById('ketQuaTraCuuCung');
 
-    if (!ngaySinh || !thangSinh || !namSinh) {
+    if (!ngayNhap || !thangNhap || !namNhap) {
         ketQua.innerHTML = "<p style='color:red;'>Vui lòng nhập đầy đủ Ngày, Tháng và Năm sinh!</p>";
+        return;
+    }
+
+    const ngaySinh = Number(ngayNhap);
+    const thangSinh = Number(thangNhap);
+    const namSinh = Number(namNhap);
+    if (!Number.isInteger(ngaySinh) || !Number.isInteger(thangSinh) || !Number.isInteger(namSinh)) {
+        ketQua.innerHTML = "<p style='color:red;'>Ngày, tháng và năm sinh phải là số nguyên hợp lệ!</p>";
+        return;
+    }
+
+    const namHienTai = new Date().getFullYear();
+    const laNamNhuan = namSinh % 4 === 0 && (namSinh % 100 !== 0 || namSinh % 400 === 0);
+    const soNgayTrongThang = [
+        31, laNamNhuan ? 29 : 28, 31, 30, 31, 30,
+        31, 31, 30, 31, 30, 31
+    ];
+
+    if (namSinh < 1 || namSinh > namHienTai || thangSinh < 1 || thangSinh > 12 ||
+        ngaySinh < 1 || ngaySinh > soNgayTrongThang[thangSinh - 1]) {
+        ketQua.innerHTML = "<p style='color:red;'>Ngày sinh không hợp lệ. Vui lòng kiểm tra ngày, tháng và năm!</p>";
         return;
     }
 
@@ -34,6 +55,20 @@ function traCuuCungHoangDao() {
     const thienCan = mangCan[(namSinh - 3) % 10];
     const diaChi = mangChi[(namSinh - 3) % 12];
     const canChi = `${thienCan} ${diaChi}`;
+    const duongDanConGiap = {
+        "Hợi": "images/con-giap/hoi.png",
+        "Tý": "images/con-giap/ty.png",
+        "Sửu": "images/con-giap/suu.png",
+        "Dần": "images/con-giap/dan.png",
+        "Mão": "images/con-giap/mao.png",
+        "Thìn": "images/con-giap/thin.png",
+        "Tỵ": "images/con-giap/ty-ran.png",
+        "Ngọ": "images/con-giap/ngo.png",
+        "Mùi": "images/con-giap/mui.png",
+        "Thân": "images/con-giap/than.png",
+        "Dậu": "images/con-giap/dau.png",
+        "Tuất": "images/con-giap/tuat.png"
+    };
 
     let cung = "";
     const ngayThang = thangSinh * 100 + ngaySinh;
@@ -51,10 +86,35 @@ function traCuuCungHoangDao() {
     else if (ngayThang >= 120 && ngayThang <= 218) cung = "Bảo Bình (Aquarius)";
     else cung = "Song Ngư (Pisces)";
 
+    const duongDanCung = {
+        "Bạch Dương (Aries)": "images/cung-hoang-dao/bach-duong.png",
+        "Kim Ngưu (Taurus)": "images/cung-hoang-dao/kim-nguu.png",
+        "Song Tử (Gemini)": "images/cung-hoang-dao/song-tu.png",
+        "Cự Giải (Cancer)": "images/cung-hoang-dao/cu-giai.png",
+        "Sư Tử (Leo)": "images/cung-hoang-dao/su-tu.png",
+        "Xử Nữ (Virgo)": "images/cung-hoang-dao/xu-nu.png",
+        "Thiên Bình (Libra)": "images/cung-hoang-dao/thien-binh.png",
+        "Thiên Yết (Scorpio)": "images/cung-hoang-dao/thien-yet.png",
+        "Nhân Mã (Sagittarius)": "images/cung-hoang-dao/nhan-ma.png",
+        "Ma Kết (Capricorn)": "images/cung-hoang-dao/ma-ket.png",
+        "Bảo Bình (Aquarius)": "images/cung-hoang-dao/bao-binh.png",
+        "Song Ngư (Pisces)": "images/cung-hoang-dao/song-ngu.png"
+    };
+
     ketQua.innerHTML = `
         <h4>Kết Quả Tra Cứu:</h4>
         <p><strong>Năm sinh Âm Lịch:</strong> ${canChi}</p>
         <p><strong>Cung Hoàng Đạo:</strong> ${cung}</p>
+        <div class="hinhMinhHoa">
+            <figure>
+                <img src="${duongDanConGiap[diaChi]}" alt="Ảnh minh họa con giáp ${diaChi}">
+                <figcaption>Con giáp ${diaChi}</figcaption>
+            </figure>
+            <figure>
+                <img src="${duongDanCung[cung]}" alt="Ảnh minh họa cung ${cung}">
+                <figcaption>${cung}</figcaption>
+            </figure>
+        </div>
     `;
 }
 
@@ -88,55 +148,67 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function taiDanhSachTinh() {
+    const chonTinh = document.getElementById('chonTinh');
+
     try {
-        const phanHoi = await fetch('https://provinces.open-api.vn/api/?depth=1');
+        const phanHoi = await fetch('https://provinces.open-api.vn/api/v2/?depth=1');
+        if (!phanHoi.ok) {
+            throw new Error(`Không thể tải danh sách tỉnh (HTTP ${phanHoi.status}).`);
+        }
+
         const danhSachTinh = await phanHoi.json();
-        
-        const chonTinh = document.getElementById('chonTinh');
+        if (!Array.isArray(danhSachTinh)) {
+            throw new Error('Dữ liệu tỉnh thành nhận được không hợp lệ.');
+        }
+
         chonTinh.innerHTML = '<option value="">-- Chọn Tỉnh / Thành phố --</option>' + 
             danhSachTinh.map(tinh => `<option value="${tinh.code}">${tinh.name}</option>`).join('');
     } catch (loi) {
+        chonTinh.innerHTML = '<option value="">Không tải được danh sách tỉnh</option>';
+        document.getElementById('chonXa').innerHTML = '<option value="">Danh sách xã/phường hiện không khả dụng</option>';
         console.error("Lỗi khi tải tỉnh thành:", loi);
     }
 }
 
-async function taiDanhSachHuyen() {
+async function taiDanhSachXa() {
     const maTinh = document.getElementById('chonTinh').value;
-    const chonHuyen = document.getElementById('chonHuyen');
     const chonXa = document.getElementById('chonXa');
-    
-    chonHuyen.innerHTML = '<option value="">-- Chọn Quận / Huyện --</option>';
     chonXa.innerHTML = '<option value="">-- Chọn Xã / Phường --</option>';
+    chonXa.disabled = true;
 
     if (!maTinh) return;
 
     try {
-        const phanHoi = await fetch(`https://provinces.open-api.vn/api/p/${maTinh}?depth=2`);
+        const phanHoi = await fetch(`https://provinces.open-api.vn/api/v2/p/${maTinh}?depth=2`);
+        if (!phanHoi.ok) {
+            throw new Error(`Không thể tải danh sách xã/phường (HTTP ${phanHoi.status}).`);
+        }
+
         const duLieuTinh = await phanHoi.json();
-        
-        chonHuyen.innerHTML = '<option value="">-- Chọn Quận / Huyện --</option>' + 
-            duLieuTinh.districts.map(huyen => `<option value="${huyen.code}">${huyen.name}</option>`).join('');
+        if (document.getElementById('chonTinh').value !== maTinh) return;
+        if (!Array.isArray(duLieuTinh.wards)) {
+            throw new Error('Dữ liệu xã/phường nhận được không hợp lệ.');
+        }
+
+        chonXa.innerHTML = '<option value="">-- Chọn Xã / Phường --</option>' +
+            duLieuTinh.wards.map(xa => `<option value="${xa.code}">${xa.name}</option>`).join('');
+        chonXa.disabled = false;
     } catch (loi) {
-        console.error("Lỗi khi tải quận huyện:", loi);
+        if (document.getElementById('chonTinh').value === maTinh) {
+            chonXa.innerHTML = '<option value="">Không tải được danh sách xã/phường</option>';
+        }
+        console.error("Lỗi khi tải xã phường:", loi);
     }
 }
 
-async function taiDanhSachXa() {
-    const maHuyen = document.getElementById('chonHuyen').value;
-    const chonXa = document.getElementById('chonXa');
-    chonXa.innerHTML = '<option value="">-- Chọn Xã / Phường --</option>';
-
-    if (!maHuyen) return;
-
-    try {
-        const phanHoi = await fetch(`https://provinces.open-api.vn/api/d/${maHuyen}?depth=2`);
-        const duLieuHuyen = await phanHoi.json();
-        
-        chonXa.innerHTML = '<option value="">-- Chọn Xã / Phường --</option>' + 
-            duLieuHuyen.wards.map(xa => `<option value="${xa.code}">${xa.name}</option>`).join('');
-    } catch (loi) {
-        console.error("Lỗi khi tải xã phường:", loi);
-    }
+function chuanHoaTenThanhPho(tenThanhPho) {
+    return tenThanhPho
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/gi, 'd')
+        .toLocaleLowerCase('vi')
+        .trim()
+        .replace(/\s+/g, ' ');
 }
 
 // bai tap 4: ung dung thoi tiet thu nho
@@ -152,16 +224,29 @@ async function xemThoiTiet() {
     ketQua.innerHTML = "<p>Đang tìm kiếm dữ liệu thời tiết...</p>";
 
     const khoaApi = "bd5e378503939ddaee76f12ad7a97608"; 
-    const duongDanApi = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(tenThanhPhoNhap)}&units=metric&lang=vi&appid=${khoaApi}`;
 
     try {
-        const phanHoi = await fetch(duongDanApi);
-        
-        if (!phanHoi.ok) {
-            throw new Error("Không tìm thấy thông tin cho thành phố này!");
+        const tenThanhPhoKhongDau = chuanHoaTenThanhPho(tenThanhPhoNhap);
+        const cacTenTimKiem = [...new Set([tenThanhPhoNhap, tenThanhPhoKhongDau])];
+        let duLieu;
+
+        for (const tenTimKiem of cacTenTimKiem) {
+            const duongDanApi = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(tenTimKiem)}&units=metric&lang=vi&appid=${khoaApi}`;
+            const phanHoi = await fetch(duongDanApi);
+
+            if (phanHoi.ok) {
+                duLieu = await phanHoi.json();
+                break;
+            }
+
+            if (phanHoi.status !== 404) {
+                throw new Error(`Không thể lấy dữ liệu thời tiết (HTTP ${phanHoi.status}).`);
+            }
         }
 
-        const duLieu = await phanHoi.json();
+        if (!duLieu) {
+            throw new Error("Không tìm thấy thông tin cho thành phố này.");
+        }
 
         ketQua.innerHTML = `
             <h4>Thời tiết tại ${duLieu.name}, ${duLieu.sys.country}</h4>

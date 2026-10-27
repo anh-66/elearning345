@@ -53,19 +53,13 @@
                 </div>
                 <div class="hangBieuMau">
                     <label>Tỉnh / Thành phố:</label>
-                    <select id="chonTinh" onchange="taiDanhSachHuyen()" required>
+                    <select id="chonTinh" onchange="taiDanhSachXa()" required>
                         <option value="">-- Chọn Tỉnh / Thành phố --</option>
                     </select>
                 </div>
                 <div class="hangBieuMau">
-                    <label>Quận / Huyện / Thị xã:</label>
-                    <select id="chonHuyen" onchange="taiDanhSachXa()" required>
-                        <option value="">-- Chọn Quận / Huyện --</option>
-                    </select>
-                </div>
-                <div class="hangBieuMau">
-                    <label>Xã / Phường / Thị trấn:</label>
-                    <select id="chonXa" required>
+                    <label>Xã / Phường:</label>
+                    <select id="chonXa" required disabled>
                         <option value="">-- Chọn Xã / Phường --</option>
                     </select>
                 </div>
@@ -76,7 +70,7 @@
         <section class="theBaiTap">
             <h3>Bài 4: Ứng dụng Thời tiết thu nhỏ (Mini Weather App)</h3>
             <div class="nhomBieuMau">
-                <input type="text" id="tenThanhPho" placeholder="Nhập tên thành phố (Ví dụ: Hanoi, Ho Chi Minh)">
+                <input type="text" id="tenThanhPho" placeholder="Nhập tên thành phố (Ví dụ: Hà Nội hoặc Ha Noi)">
                 <button onclick="xemThoiTiet()">Xem thời tiết</button>
             </div>
             <div id="ketQuaThoiTiet" class="hopKetQua"></div>
